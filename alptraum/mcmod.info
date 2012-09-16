@@ -1,0 +1,21 @@
+[
+{
+  "modid": "_bau5Alptraum",
+  "name": "Alptraum",
+  "description": "",
+  "version": "@VERSION@",
+  "mcversion": "1.3.2",
+  "url": "",
+  "updateUrl": "",
+  "authors": [
+    "_bau5"
+  ],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [
+  ],
+  "parent":"",
+  "dependencies": [
+  ]
+}
+]
