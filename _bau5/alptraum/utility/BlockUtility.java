@@ -2,6 +2,7 @@ package _bau5.alptraum.utility;
 
 import java.util.Random;
 
+
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
@@ -31,7 +32,7 @@ public class BlockUtility extends BlockContainer
 	@SideOnly(Side.CLIENT) 
 	public boolean onBlockActivated(World par1World, int i, int j, int k, EntityPlayer par5EntityPlayer, int par6, float par7, float par8, float par9)
     {
-		par5EntityPlayer.openGui(Alptraum.instance(), ClientProxy.GUI_INDEX[0], par1World, i, j, k);
+		par5EntityPlayer.openGui(Alptraum.instance(), 0, par1World, i, j, k);
         return true;
         
     }

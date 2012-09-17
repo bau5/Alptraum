@@ -1,11 +1,14 @@
 package _bau5.alptraum.utility;
 
+import java.util.Random;
+
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 import cpw.mods.fml.common.registry.GameRegistry;
 import _bau5.alptraum.AlpRecipeManager;
 import _bau5.alptraum.Alptraum;
 import net.minecraft.src.Block;
+import net.minecraft.src.Entity;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.FurnaceRecipes;
 import net.minecraft.src.IInventory;
@@ -27,6 +30,11 @@ public class TileEntityDiscoverer extends TileEntity implements IInventory, ISid
 	private ItemStack[] discovererStack = new ItemStack[12];
 	private AlpRecipeManager recipeManager;
 	
+	private Random rand = new Random();
+	
+	private int residueNumberOfAttempts = 0;
+	private int residueRequiredAttempts;
+	
 	public ItemStack currentItem;
 	public float angle = 0.0F;
 	//The number of ticks it will continue researching
@@ -39,33 +47,66 @@ public class TileEntityDiscoverer extends TileEntity implements IInventory, ISid
 	
 	public TileEntityDiscoverer()
 	{
+//		residueRequiredAttempts = rand.nextInt(6) + 5;
+		residueRequiredAttempts = 2;
 		if(Alptraum.mc.theWorld != null)
 		{
 			recipeManager = Alptraum.alpWorldInfo.getRecipeManager();
 		}
+		System.out.println(residueNumberOfAttempts + " " +residueRequiredAttempts);
 	}
 	
 	public void updateEntity()
-	{
+	{	
 		if(discovererStack[0] == null)
 		{
 			currentItemResearchTime = 0;
 		}
-		angle += move_speed;
-		if(this.canSmelt() && currentItemResearchTime < 200)
+		if(this.canReasearchItem() && currentItemResearchTime < 200)
 		{
 			++currentItemResearchTime;
-			System.out.println("Cooking");
+			angle = currentItemResearchTime * 0.1F;
 		}
-		if(this.canSmelt() && currentItemResearchTime >= 200)
+		if(this.canReasearchItem() && currentItemResearchTime >= 200)
 		{
 			currentItemResearchTime = 0;
-			this.smeltItem();
-			System.out.println("Smelted");
+
+			if(residueNumberOfAttempts > 0)
+			{
+				if(residueNumberOfAttempts == residueRequiredAttempts)
+				{
+					this.researchItem();
+					System.out.println("Smelted");
+					residueNumberOfAttempts = 0;
+					return;
+				}
+			} 
+			++residueNumberOfAttempts;
+			this.failResearch();
+			System.out.println(residueNumberOfAttempts + " " +residueRequiredAttempts);
 		}
 	}
 	
-	private boolean canSmelt()
+	private void failResearch()	
+	{
+		if(this.discovererStack[0] == null)
+		{
+			return;
+		}
+		else
+		{
+			int a = this.discovererStack[0].stackSize;
+			if(a == 1)
+			{
+				 this.discovererStack[0] = null;
+			}else --this.discovererStack[0].stackSize;
+			if(Alptraum.mc.theWorld != null && !Alptraum.mc.theWorld.isRemote)
+			{
+				Alptraum.mc.theWorld.playSoundEffect(this.xCoord, this.yCoord, this.zCoord, "random.fizz", 1.0F, 1.0F);
+			}
+		}
+	}
+	private boolean canReasearchItem()
     {
         if (this.discovererStack[0] == null)
         {
@@ -111,9 +152,9 @@ public class TileEntityDiscoverer extends TileEntity implements IInventory, ISid
 		} else return null;
 	}
 
-    public void smeltItem()
+    public void researchItem()
     {
-        if (this.canSmelt())
+        if (this.canReasearchItem())
         {
             ItemStack stack = this.getResearchResult(this.discovererStack[0]);
 
@@ -284,12 +325,12 @@ public class TileEntityDiscoverer extends TileEntity implements IInventory, ISid
 		return true;
 	}
 
-	public void readFromNBT(NBTTagCompound par1NBTTagCompound)
+	public void readFromNBT(NBTTagCompound nbtTagComp)
     {
-        super.readFromNBT(par1NBTTagCompound);
-        NBTTagList var2 = par1NBTTagCompound.getTagList("Items");
+        super.readFromNBT(nbtTagComp);
+        NBTTagList var2 = nbtTagComp.getTagList("Items");
+        
         this.discovererStack = new ItemStack[this.getSizeInventory()];
-
         for (int var3 = 0; var3 < var2.tagCount(); ++var3)
         {
             NBTTagCompound var4 = (NBTTagCompound)var2.tagAt(var3);
@@ -300,16 +341,17 @@ public class TileEntityDiscoverer extends TileEntity implements IInventory, ISid
                 this.discovererStack[var5] = ItemStack.loadItemStackFromNBT(var4);
             }
         }
+        
     }
 
     /**
      * Writes a tile entity to NBT.
      */
-    public void writeToNBT(NBTTagCompound par1NBTTagCompound)
+    public void writeToNBT(NBTTagCompound nbtTagComp)
     {
-        super.writeToNBT(par1NBTTagCompound);
+        super.writeToNBT(nbtTagComp);
+        
         NBTTagList var2 = new NBTTagList();
-
         for (int var3 = 0; var3 < this.discovererStack.length; ++var3)
         {
             if (this.discovererStack[var3] != null)
@@ -320,8 +362,7 @@ public class TileEntityDiscoverer extends TileEntity implements IInventory, ISid
                 var2.appendTag(var4);
             }
         }
-
-        par1NBTTagCompound.setTag("Items", var2);
+        nbtTagComp.setTag("Items", var2);
     }
 	@Override
 	public void openChest() 

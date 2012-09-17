@@ -11,11 +11,11 @@ import net.minecraft.src.GuiScreenBook;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.ScaledResolution;
 
-public class NMGuiBook extends GuiScreenBook 
+public class NMGuiBook extends GuiScreen 
 {
 	public NMGuiBook(EntityPlayer par1EntityPlayer, ItemStack par2ItemStack) 
 	{
-		super(par1EntityPlayer, par2ItemStack, false);
+		
 	}
 	public void drawScreen(int i, int j, float f)
 	{

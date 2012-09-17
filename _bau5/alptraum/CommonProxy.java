@@ -1,9 +1,11 @@
 package _bau5.alptraum;
 
 import _bau5.alptraum.client.GuiDiscoverer;
+import _bau5.alptraum.client.NMGuiBook;
 import _bau5.alptraum.utility.ContainerDiscoverer;
 import _bau5.alptraum.utility.TileEntityDiscoverer;
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.GuiNewChat;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -11,7 +13,6 @@ import cpw.mods.fml.common.network.IGuiHandler;
 
 public class CommonProxy implements IGuiHandler
 {
-	public static int[] GUI_INDEX = new int[2];
 	  public void registerRenderInformation() 
 	  {
 		  
@@ -20,23 +21,26 @@ public class CommonProxy implements IGuiHandler
 	  public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) 
 	  {
 		  TileEntity te = world.getBlockTileEntity(x, y, z);
-
-		  switch(ID)
+		  if(te instanceof TileEntityDiscoverer)
 		  {
-		  case 0: return new ContainerDiscoverer(player.inventory, (TileEntityDiscoverer)te);
+			  TileEntityDiscoverer ted = (TileEntityDiscoverer)te;
+			  return new ContainerDiscoverer(player.inventory, (TileEntityDiscoverer)te);
 		  }
-		  
-		  return null;
+		  else return null;
 	  }
 	
 	  @Override
 	  public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) 
 	  {
-		  TileEntity te = world.getBlockTileEntity(x, y, z);
-		  if(te instanceof TileEntityDiscoverer)
+		  if(ID == 0)
 		  {
-			  return new GuiDiscoverer(player.inventory, (TileEntityDiscoverer)te);
-		  }else return null;
+			  return new GuiDiscoverer(player.inventory, (TileEntityDiscoverer)world.getBlockTileEntity(x, y, z));
+		  }
+		  if(ID == 1)
+		  {
+			  return new NMGuiBook(player, player.getHeldItem());
+		  }
+		  return null;
 	  }
 	
 }

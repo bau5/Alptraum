@@ -11,7 +11,7 @@ import cpw.mods.fml.common.IWorldGenerator;
 
 public class AlpWorldGen implements IWorldGenerator
 {
-	private AlpLoot lootGen;
+	private AlpLootGen lootGen;
 	
 	@Override
 	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider) 
@@ -31,7 +31,7 @@ public class AlpWorldGen implements IWorldGenerator
             int z = j + random.nextInt(16);
             new AlpBlockGen(Alptraum.nightmareStone.blockID, 0, 4).generate(world, random, x, y, z);
         }
-		lootGen = new AlpLoot(world);
+		lootGen = new AlpLootGen(world);
 		if(!Alptraum.alpWorldInfo.generatedLoot && lootGen.getCanGen()) 
 		{
 			int x1 = world.getSpawnPoint().posX + random.nextInt(30);

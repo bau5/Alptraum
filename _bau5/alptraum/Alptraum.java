@@ -5,7 +5,17 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 import _bau5.alptraum.client.ClientPacketHandler;
+import _bau5.alptraum.item.AlpBookOrb;
+import _bau5.alptraum.item.ShiftingAxe;
+import _bau5.alptraum.item.ShiftingIngot;
+import _bau5.alptraum.item.ShiftingOrb;
+import _bau5.alptraum.item.ShiftingOre;
+import _bau5.alptraum.item.ShiftingPickAxe;
+import _bau5.alptraum.item.ShiftingResidue;
+import _bau5.alptraum.item.ShiftingSphere;
+import _bau5.alptraum.item.ShiftingSword;
 import _bau5.alptraum.utility.BlockUtility;
 import _bau5.alptraum.utility.TileEntityDiscoverer;
 import _bau5.alptraum.world.AlpStone;
@@ -57,17 +67,17 @@ serverPacketHandlerSpec =
 @SidedPacketHandler(channels = {"_bau5Alptraum" }, packetHandler = ServerPacketHandler.class))
 public class Alptraum 
 {
-	@SidedProxy(clientSide = "_bau5.alptraum.ClientProxy", serverSide = "_bau5.alptraum.CommonProxy")
-	
+	@SidedProxy(clientSide = "_bau5.alptraum.client.ClientProxy", serverSide = "_bau5.alptraum.CommonProxy")
 	public static CommonProxy proxy;
+	
 	@Instance
 	private static Alptraum instance;
 	public static Minecraft mc = FMLClientHandler.instance().getClient();
 	public static Random rand = new Random();
-	
-	public static String textureFile = "/_bau5/alptraum/Textures/AlptraumSheet.png";
-	public static String particlesTextureFile = "/_bau5/alptraum/Textures/particles.png";
+
 	public static String baseTextureFile = "/_bau5/alptraum/Textures/";
+	public static String textureFile = baseTextureFile + "AlptraumSheet.png";
+	public static String particlesTextureFile = baseTextureFile + "particles.png";
 	public String[] alpSounds = {
 			"insanity"
 	};
