@@ -237,12 +237,12 @@ public class Alptraum
 	{
 		alpWorldInfo.loadWorldInfoFromFile();
 	}
-	public static Logger logger = ModLoader.getLogger();
+	public static Logger logger = FMLLog.getLogger();
 	public static void logP(String message)
 	{
-		if(ModLoader.getMinecraftInstance().thePlayer != null)
+		if(mc.thePlayer != null)
 		{
-			ModLoader.getMinecraftInstance().thePlayer.addChatMessage(message);
+			mc.thePlayer.addChatMessage(message);
 		}
 	}
 	public static void playSound(String soundName)
